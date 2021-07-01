@@ -1,64 +1,43 @@
 #include "ft_pipex.h"
 
-// void            get_and_store_exec(t_info *st, char **av)
-// {
-//     dup2(st->pipefd[0], STDIN_FILENO);
-//     close(st->pipefd[0]);
-//     dup2(st->pipefd[1], STDOUT_FILENO);
-//     close(st->pipefd[1]);
-//     ft_execve(st);
-// }
-
 void            store_output_exec(t_info *st, char **av)
 {
     int fd;
     
-    close(st->pipefd[1]); // Fechamos o write do pipe
+    close(st->pipefd[0]); // Fechamos o write do pipe
     fd = open(av[1], O_RDONLY); // Abrir ficheiro para verificar se esta aberto
     if (fd < 0)
         printf("\n\tfile doestn exist!\n");
     printf("\n\tGOOD FILE\n");
     close(fd); // Fechamos o ficheiro
-    dup2(st->pipefd[0], STDIN_FILENO); // Lemos o STDIN do comando 
-    close(st->pipefd[0]); // Fechamos o ewad do pipe
+    dup2(st->pipefd[1], STDOUT_FILENO); // Escrevemos o STOUT do comando para o pipe
+    close(st->pipefd[1]); // Fechamos o ewad do pipe
     ft_execve_cmd(st); // Executamos o comando
 }
 
 
-else if (pid == 0) { //Child
-    dup2(pd[0], 0); // O read fica o stdin do child e do comando
-    close(pd[0]); // Fechamos o  read do pipe
-    close(pd[1]); // Fechamos o write do pipe
-    execlp("wc", "wc", "-l", (char *)NULL); // Vai mandar o comando para o stdin
-    fprintf(stderr, "Failed to execute 'wc'\n");
-    exit(1);
-}
-
-void create_child(int *pid)
-{
-    *pid = fork();
-    if (*pid == -1)
-        perror("\n\n\t\tPid error\n\n");
-}
-
+// else if (pid == 0) { //Child
+//     dup2(pd[0], 0); // O read fica o stdin do child e do comando
+//     close(pd[0]); // Fechamos o  read do pipe
+//     close(pd[1]); // Fechamos o write do pipe
+//     execlp("wc", "wc", "-l", (char *)NULL); // Vai mandar o comando para o stdin
+//     fprintf(stderr, "Failed to execute 'wc'\n");
+//     exit(1);
+// }
 
 void send_file(t_info *st, char **av)
 {
     int fd;
 
-    printf("\nCHEGOU AQUI 1!\n");
-    close(st->pipefd[0]);
+    close(st->pipefd[1]);
     printf("\n\tPrint av[4] = %s!\n", av[4]);
     
     fd = open(av[4], O_CREAT | O_TRUNC | O_WRONLY);
-    printf("\nCHEGOU AQUI 3!\n");
     
+    dup2(st->pipefd[0], STDIN_FILENO);
+    close(st->pipefd[0]);
     dup2(fd, STDOUT_FILENO);
-    
     close(fd);
-
-    dup2(st->pipefd[1], STDIN_FILENO);
-    close(st->pipefd[1]);
 
     ft_execve_cmd(st);
 }
@@ -83,7 +62,6 @@ void ft_execve_cmd(t_info *st)
         else
             path = *st->cmd;
         printf("\n\tTHIS IS THE PATH OF THE COMMAND %s\n", path);
-
         execve(path, st->cmd, NULL);
         x++;
     }
@@ -101,7 +79,7 @@ t_info handle_processes(t_info st, char **av)
         perror("\n\n\t\tPipe error\n\n");
     // st.i++;
     // if (st.cmd_counter != 0) // Criamos o child process ate ao ultimo comando
-        create_child(&st.pid); 
+    create_child(&st.pid); 
     if (st.pid == 0)
     {
         printf("\n\tCHILD ALIVE BITCH!!\n\n");
