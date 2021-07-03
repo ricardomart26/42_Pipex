@@ -31,6 +31,7 @@ int count_words(char *str);
 char		**split(char const *s, char c);
 void ft_execve_cmd(t_info *st);
 char *str_trim(char *str, char c);
+int ft_strlen(char *str);
 
 
 

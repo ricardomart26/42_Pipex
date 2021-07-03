@@ -53,7 +53,7 @@ void ft_execve_cmd(t_info *st)
     x = 0;
 
     dir =  split(st->path, ':');
-    printf("\tdir = %s...\n", dir[x]);
+    // printf("\tdir = %s...\n", dir[x]);
     while (dir[x])
     {
         // printf("\nCHEGOU AQUI EXECVE!\n");
@@ -61,7 +61,7 @@ void ft_execve_cmd(t_info *st)
             path = ft_str3join(dir[x], "/" , st->cmd[0]);
         else
             path = *st->cmd;
-        printf("\n\tTHIS IS THE PATH OF THE COMMAND %s\n", path);
+        // printf("\n\tTHIS IS THE PATH OF THE COMMAND %s\n", path);
         execve(path, st->cmd, NULL);
         x++;
     }
