@@ -1,5 +1,19 @@
 #include "ft_pipex.h"
 
+char	*get_env_path(char **envp)
+{
+	int	x;
+
+	x = 0;
+	while (envp[x])
+	{
+		if (ft_strcmp("PATH", envp[x], 4))
+			return (envp[x] + 5);
+		x++;
+	}
+	return (NULL);
+}
+
 static int	ft_cntwrd(char const *s, char c)
 {
 	unsigned int	i;
@@ -39,7 +53,7 @@ static char	*ft_strndup(const char *s, size_t n)
 	return (str);
 }
 
-char		**split(char const *s, char c)
+char	**split(char const *s, char c)
 {
 	int		i;
 	int		j;
