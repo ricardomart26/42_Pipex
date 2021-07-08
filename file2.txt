@@ -1,9 +1,1 @@
-total 152
--rwxr-xr-x  1 rimartin  2020_lisbon  50592 Jul  4 16:55 a.out
--rw-r--r--  1 rimartin  2020_lisbon      0 Jun 30 21:15 file1.txt
--rw-r--r--  1 rimartin  2020_lisbon     62 Jul  4 16:55 file2.txt
--rw-r--r--  1 rimartin  2020_lisbon   1357 Jul  4 16:55 ft_pipex.c
--rw-r--r--  1 rimartin  2020_lisbon    725 Jul  4 16:54 ft_pipex.h
--rw-r--r--  1 rimartin  2020_lisbon   1074 Jul  4 16:54 split.c
--rw-r--r--  1 rimartin  2020_lisbon    985 Jul  4 16:12 utils.c
--rw-r--r--  1 rimartin  2020_lisbon   1196 Jul  4 16:21 utils2.c
+       9

@@ -12,7 +12,6 @@ typedef struct s_info
 	pid_t	pid;
 	char	**cmd;
 	int		pipefd[2];
-	char	*env;
 	char	*path;
 	int		ac;
 }	t_info;

@@ -46,8 +46,22 @@ void	ft_execve_cmd(t_info *st)
 		else
 			path = *st->cmd;
 		execve(path, st->cmd, NULL);
+		free(path);
 		x++;
 	}
+}
+
+void	free_dp(t_info *st)
+{
+	int i;
+
+	i = 0;
+	while (st->cmd[i])
+	{
+		free(st->cmd[i]);
+		i++;
+	}
+	free(st->cmd);
 }
 
 t_info	handle_processes(t_info st, char **av)
@@ -60,6 +74,7 @@ t_info	handle_processes(t_info st, char **av)
 	else
 		wait(NULL);
 	send_file(&st, av, 3);
+	free_dp(&st);
 	return (st);
 }
 
