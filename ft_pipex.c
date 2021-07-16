@@ -36,6 +36,7 @@ void	ft_execve_cmd(t_info *st)
 	char	**dir;
 	char	*path;
 	int		x;
+	int i = 0;
 
 	x = 0;
 	dir = split(st->path, ':');
@@ -49,23 +50,15 @@ void	ft_execve_cmd(t_info *st)
 		free(path);
 		x++;
 	}
-}
-
-void	free_dp(t_info *st)
-{
-	int i;
-
-	i = 0;
-	while (st->cmd[i])
-	{
-		free(st->cmd[i]);
-		i++;
-	}
-	free(st->cmd);
+	while (dir[i])
+		free(dir[i++]);
+	free(dir);
 }
 
 t_info	handle_processes(t_info st, char **av)
 {
+	int	i;
+
 	if (pipe(st.pipefd) == -1)
 		perror("\n\n\t\tPipe error\n\n");
 	create_child(&st.pid);
@@ -74,7 +67,11 @@ t_info	handle_processes(t_info st, char **av)
 	else
 		wait(NULL);
 	send_file(&st, av, 3);
-	free_dp(&st);
+	i = 0;
+	while (st.cmd[i])
+		free(st.cmd[i++]);
+	free(st.cmd);
+	st.cmd = NULL;
 	return (st);
 }
 

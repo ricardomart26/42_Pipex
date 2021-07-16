@@ -73,6 +73,5 @@ char	*ft_strdup(const char *s1)
 		dup++;
 	}
 	*dup = '\0';
-	
 	return (dup - size);
 }
