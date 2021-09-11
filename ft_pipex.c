@@ -36,7 +36,7 @@ void	ft_execve_cmd(t_info *st)
 	char	**dir;
 	char	*path;
 	int		x;
-	int i = 0;
+	int		i;	
 
 	x = 0;
 	dir = split(st->path, ':');
@@ -50,6 +50,7 @@ void	ft_execve_cmd(t_info *st)
 		free(path);
 		x++;
 	}
+	i = 0;
 	while (dir[i])
 		free(dir[i++]);
 	free(dir);

@@ -33,26 +33,6 @@ static int	ft_cntwrd(char const *s, char c)
 	return (counter);
 }
 
-static char	*ft_strndup(const char *s, size_t n)
-{
-	char	*str;
-	size_t	c;
-
-	if (!s)
-		return (NULL);
-	str = (char *)malloc(n + 1);
-	if (!str)
-		return (NULL);
-	c = 0;
-	while (c < n)
-	{
-		str[c] = s[c];
-		c++;
-	}
-	str[c] = '\0';
-	return (str);
-}
-
 char	**split(char const *s, char c)
 {
 	int		i;
