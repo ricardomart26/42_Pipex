@@ -76,3 +76,20 @@ char	*str_trim(char *str, char c)
 	ret[j] = '\0';
 	return (str);
 }
+
+char	*ft_strndup(const char *s1, int len)
+{
+	char	*dup;
+	int		i;
+
+	if (ft_strlen((char *)s1) <= len)
+		return (ft_strdup(s1));
+	dup = (char *)malloc(ft_strlen((char *)s1) + 1);
+	if (!dup)
+		return (NULL);
+	i = -1;
+	while (++i < len)
+		dup[i] = s1[i];
+	dup[i] = '\0';
+	return (dup);
+}

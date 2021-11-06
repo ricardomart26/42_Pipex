@@ -1,6 +1,6 @@
 #include "ft_pipex.h"
 
-void	store_output_exec(t_info *st, char **av, int i)
+void	store_output_exec(t_info *st, char **av, int i, char **env)
 {
 	int	fd;
 
@@ -12,10 +12,10 @@ void	store_output_exec(t_info *st, char **av, int i)
 	close(fd);
 	dup2(st->pipefd[1], STDOUT_FILENO);
 	close(st->pipefd[1]);
-	ft_execve_cmd(st);
+	ft_execve_cmd(st, env);
 }
 
-void	send_file(t_info *st, char **av, int i)
+void	send_file(t_info *st, char **av, int i, char **env)
 {
 	int	fd;
 
@@ -28,10 +28,10 @@ void	send_file(t_info *st, char **av, int i)
 	close(st->pipefd[0]);
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
-	ft_execve_cmd(st);
+	ft_execve_cmd(st, env);
 }
 
-void	ft_execve_cmd(t_info *st)
+void	ft_execve_cmd(t_info *st, char **env)
 {
 	char	**dir;
 	char	*path;
@@ -46,7 +46,7 @@ void	ft_execve_cmd(t_info *st)
 			path = ft_str3join(dir[x], "/", st->cmd[0]);
 		else
 			path = *st->cmd;
-		execve(path, st->cmd, NULL);
+		execve(path, st->cmd, env);
 		free(path);
 		x++;
 	}
@@ -56,7 +56,7 @@ void	ft_execve_cmd(t_info *st)
 	free(dir);
 }
 
-t_info	handle_processes(t_info st, char **av)
+t_info	handle_processes(t_info st, char **av, char **env)
 {
 	int	i;
 
@@ -64,10 +64,10 @@ t_info	handle_processes(t_info st, char **av)
 		perror("\n\n\t\tPipe error\n\n");
 	create_child(&st.pid);
 	if (st.pid == 0)
-		store_output_exec(&st, av, 2);
+		store_output_exec(&st, av, 2, env);
 	else
 		wait(NULL);
-	send_file(&st, av, 3);
+	send_file(&st, av, 3, env);
 	i = 0;
 	while (st.cmd[i])
 		free(st.cmd[i++]);
@@ -84,6 +84,6 @@ int	main(int ac, char **av, char **env)
 		perror("\n\n\t\tMissing comands\n\n");
 	st.path = get_env_path(env);
 	st.ac = ac;
-	st = handle_processes(st, av);
+	st = handle_processes(st, av, env);
 	return (0);
 }
