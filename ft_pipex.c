@@ -1,43 +1,20 @@
 #include "ft_pipex.h"
 
-void	store_output_exec(t_info *st, char **av, int i, char **env)
+int error_message(char *msg)
 {
-	int	fd;
-
-	st->cmd = split(av[i], ' ');
-	close(st->pipefd[0]);
-	fd = open(av[1], O_RDONLY);
-	if (fd < 0)
-		perror("First Fd not found\n");
-	close(fd);
-	dup2(st->pipefd[1], STDOUT_FILENO);
-	close(st->pipefd[1]);
-	ft_execve_cmd(st, env);
+	perror(msg);
+	return (-1);
 }
 
-void	send_file(t_info *st, char **av, int i, char **env)
-{
-	int	fd;
-
-	st->cmd = split(av[i], ' ');
-	close(st->pipefd[1]);
-	fd = open(av[4], O_CREAT | O_TRUNC | O_WRONLY);
-	if (fd < 0)
-		perror("First Fd not found\n");
-	dup2(st->pipefd[0], STDIN_FILENO);
-	close(st->pipefd[0]);
-	dup2(fd, STDOUT_FILENO);
-	close(fd);
-	ft_execve_cmd(st, env);
-}
-
-void	ft_execve_cmd(t_info *st, char **env)
+void	ft_execve_cmd(t_info *st, char **env, int stdin_file, int stdout_file)
 {
 	char	**dir;
 	char	*path;
 	int		x;
-	int		i;	
+	int		i;
 
+	dup2(stdin_file, STDIN_FILENO);
+	dup2(stdout_file, STDOUT_FILENO);
 	x = 0;
 	dir = split(st->path, ':');
 	while (dir[x])
@@ -56,24 +33,47 @@ void	ft_execve_cmd(t_info *st, char **env)
 	free(dir);
 }
 
-t_info	handle_processes(t_info st, char **av, char **env)
+int	handle_processes(t_info st, char **av, char **env, size_t command_count)
 {
-	int	i;
+	size_t	j;
+	int stdin_file;
+	int stdout_file;
+	
+	stdin_file = open(av[1], O_RDONLY);
+	if (stdin_file == -1)
+		return (error_message("stdin file error\n"));
+	j = 1;
+    while (++j < command_count)
+	{
 
-	if (pipe(st.pipefd) == -1)
-		perror("\n\n\t\tPipe error\n\n");
-	create_child(&st.pid);
-	if (st.pid == 0)
-		store_output_exec(&st, av, 2, env);
-	else
+		if (pipe(st.pipefd) == -1)
+			return (error_message("Pipe error\n"));
+		st.pid = fork();
+		if (st.pid == -1)
+			return (error_message("Pid error\n"));
+		if (st.pid == 0)
+		{
+
+			stdout_file = st.pipefd[1];
+			if (j == command_count - 1)
+			{
+				stdout_file = open(av[j + 1], O_CREAT | O_TRUNC | O_WRONLY);
+				if (stdout_file == -1)
+					return (error_message("stdout file error\n"));
+			}
+			// fprintf(stderr, "stdin %d stdout %d\n", stdin_file, stdout_file);
+			st.cmd = split(av[j], ' ');
+			ft_execve_cmd(&st, env, stdin_file, stdout_file);
+		}
+		close(stdin_file);
+		stdin_file = dup(st.pipefd[0]);
+		close(st.pipefd[0]);
+		close(st.pipefd[1]);
+	}
+	j = 1;
+	while (++j < command_count)
 		wait(NULL);
-	send_file(&st, av, 3, env);
-	i = 0;
-	while (st.cmd[i])
-		free(st.cmd[i++]);
-	free(st.cmd);
-	st.cmd = NULL;
-	return (st);
+	return (1);
 }
 
 int	main(int ac, char **av, char **env)
@@ -81,9 +81,10 @@ int	main(int ac, char **av, char **env)
 	t_info	st;
 
 	if (ac < 5)
-		perror("\n\n\t\tMissing comands\n\n");
+		return (error_message("Usage: ./pipex file_for_stdin cmd1 cmd2 file_for_stdout\n"));
 	st.path = get_env_path(env);
 	st.ac = ac;
-	st = handle_processes(st, av, env);
+	if (handle_processes(st, av, env, ac - 1) == -1)
+		return (-1);
 	return (0);
 }

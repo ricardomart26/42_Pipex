@@ -1,4 +1,6 @@
-CC = gcc -Wall -Werror -Wextra
+CC = gcc
+
+CFLAGS = -Wall -Werror -Wextra -g
 
 SRC = ft_pipex.c split.c utils.c utils2.c
 
@@ -9,7 +11,7 @@ NAME = pipex
 all: $(NAME)
 
 $(NAME) : $(OBJ)
-	$(CC) $(OBJ) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
 
 clean :
 	rm -f $(OBJ)
@@ -17,6 +19,6 @@ clean :
 fclean : clean
 	rm -f $(NAME)
 
-re : fclean main
+re : fclean $(NAME)
 
 .PHONY: all main clean fclean re

@@ -1,12 +1,5 @@
 #include "ft_pipex.h"
 
-void	create_child(int *pid)
-{
-	*pid = fork();
-	if (*pid == -1)
-		perror("\n\n\t\tPid error\n\n");
-}
-
 int	ft_strlen(char *str)
 {
 	int	ret;

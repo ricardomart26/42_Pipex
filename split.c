@@ -44,7 +44,7 @@ char	**split(char const *s, char c)
 		return (NULL);
 	i = 0;
 	k = 0;
-	tab = (char **)malloc(sizeof(char *) * (ft_cntwrd(s, c)) + 1);
+	tab = (char **)malloc(sizeof(char *) * (ft_cntwrd(s, c) + 1));
 	if (!tab || !s)
 		return (NULL);
 	while (s[i])
