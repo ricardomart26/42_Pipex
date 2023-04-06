@@ -2,7 +2,7 @@ CC = gcc
 
 CFLAGS = -Wall -Werror -Wextra -g
 
-SRC = ft_pipex.c split.c utils.c utils2.c
+SRC = ft_pipex.c split.c utils.c
 
 OBJ = $(SRC:.c=.o)
 
