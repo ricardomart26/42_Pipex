@@ -1,17 +1,39 @@
 #include "ft_pipex.h"
 
-char	*get_env_path(char **envp)
+static char	*ft_strdup(const char *s1)
 {
-	int	x;
+	char	*dup;
+	int		size;
 
-	x = 0;
-	while (envp[x])
+	size = ft_strlen((char *)s1);
+	dup = (char *)malloc(size + 1);
+	if (!dup)
+		return (NULL);
+	while (*s1)
 	{
-		if (ft_strcmp("PATH", envp[x], 4))
-			return (envp[x] + 5);
-		x++;
+		*dup = *(char *)s1;
+		s1++;
+		dup++;
 	}
-	return (NULL);
+	*dup = '\0';
+	return (dup - size);
+}
+
+static char	*ft_strndup(const char *s1, int len)
+{
+	char	*dup;
+	int		i;
+
+	if (ft_strlen(s1) <= len)
+		return (ft_strdup(s1));
+	dup = (char *)malloc(ft_strlen(s1) + 1);
+	if (!dup)
+		return (NULL);
+	i = -1;
+	while (++i < len)
+		dup[i] = s1[i];
+	dup[i] = '\0';
+	return (dup);
 }
 
 static int	ft_cntwrd(char const *s, char c)
