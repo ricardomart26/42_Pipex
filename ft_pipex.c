@@ -82,14 +82,13 @@ int	main(int ac, char **av, char **env)
 		return (error_message("Usage: ./pipex file_for_stdin cmd1 cmd2 file_for_stdout\n"));
 	st.path = get_env_path(env);
 	st.ac = ac;
-		
 	st.stdin_file = open(av[1], O_RDONLY);
 	if (st.stdin_file == -1)
 		return (error_message("stdin file error\n"));
 	if (handle_processes(st, av, env, ac - 1) == -1)
 		return (-1);
 	j = 1;
-	while (++j < ac - 1)
+	while (++j < (size_t)ac - 1)
 		wait(NULL);
 	return (0);
 }
